@@ -66,14 +66,14 @@ function App() {
         {activePage.authPage && <AuthForm />}
       </AuthButtonsContext>
 
-      <section className="flex justify-between">
+      <section className="flex">
         {/* Side bar */}
         <NavBtnCtx value={navBtnCtxValue}>
           {!activePage.authPage && (
             <SideBar activePage={activePage} onLogoutClick={displayPage} />
           )}
         </NavBtnCtx>
-        
+
         {/* Display the correct page based on a state (which nav button was clicked) */}
         {activePage.tasks ? (
           <Tasks />

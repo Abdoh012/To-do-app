@@ -1,8 +1,11 @@
+import TaskSummaryCard from "../TaskSummaryCard";
 
-export default function TodayTasks() {
+export default function TodayTasks({ today }) {
   return (
     <div>
-      Today tasks
+      {today.map((task) => {
+        return <TaskSummaryCard key={task.id} {...task}></TaskSummaryCard>;
+      })}
     </div>
-  )
+  );
 }

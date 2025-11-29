@@ -1,3 +1,3 @@
 export default function PagesContainer({ children }) {
-  return <div className="flex-8 bg-neutral-50 py-10 px-20">{children}</div>;
+  return <div className="flex-1 ml-64 min-h-screen bg-neutral-50 py-10 px-20">{children}</div>;
 }

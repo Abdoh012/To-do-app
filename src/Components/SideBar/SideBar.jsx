@@ -1,25 +1,21 @@
 import Icon from "../AuthForm/Icon";
 import NavButton from "./NavButton";
+import { navBtns } from "@/util/data";
 
 // Import font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-
-/* import all the icons in Free Solid, Free Regular, and Brands styles */
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { far } from "@fortawesome/free-regular-svg-icons";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-
-library.add(fas, far, fab); // Add (fas, far, fab) to the library of icons
+import "../../util/fontAwesome.js";
 
 // Variables
 const activeBtnStyle = "bg-emerald-500 text-white";
 const nonActiveBtnStyle = "bg-auto text-neutral-700";
+const activeIconStyle = "text-white";
+const nonActiveIconStyle = "text-neutral-700";
 // End of variables
 
 export default function SideBar({ activePage, onLogoutClick }) {
   return (
-    <div className="flex-2 border-r border-neutral-200 h-screen grid grid-rows-[2fr_10fr_1.5fr]">
+    <div className="w-64 border-r border-neutral-200 h-screen grid grid-rows-[2fr_10fr_1.5fr] fixed top-0 left-0">
       <div className="p-5 flex items-center border-b border-neutral-200">
         <Icon
           width={"w-10"}
@@ -37,36 +33,33 @@ export default function SideBar({ activePage, onLogoutClick }) {
       <nav className="mt-10 mx-5">
         <ul>
           {/* Tasks button */}
-          <NavButton
-            fa={"fa-solid fa-list-check"}
-            colors={activePage.tasks ? activeBtnStyle : nonActiveBtnStyle}
-          >
-            Tasks
-          </NavButton>
-
-          {/* Goals button */}
-          <NavButton
-            fa={"fa-solid fa-bullseye"}
-            colors={activePage.goals ? activeBtnStyle : nonActiveBtnStyle}
-          >
-            Goals
-          </NavButton>
-
-          {/* Habits button */}
-          <NavButton
-            fa={"fa-solid fa-arrow-trend-up"}
-            colors={activePage.habits ? activeBtnStyle : nonActiveBtnStyle}
-          >
-            Habits
-          </NavButton>
-
-          {/* Profile button */}
-          <NavButton
-            fa={"fa-regular fa-user"}
-            colors={activePage.profile ? activeBtnStyle : nonActiveBtnStyle}
-          >
-            Profile
-          </NavButton>
+          {navBtns.map((btn) => {
+            return (
+              <NavButton
+                key={btn.id}
+                // fa-icon of the button
+                fa={`${
+                  btn.activePage !== "profile" ? "fa-solid" : "fa-regular"
+                } ${btn.faIcon}`}
+                // Colors of the buttons
+                btnColors={
+                  activePage[btn.activePage]
+                    ? activeBtnStyle
+                    : nonActiveBtnStyle
+                }
+                // Colors of the icons
+                iconColors={
+                  activePage[btn.activePage]
+                    ? activeIconStyle
+                    : nonActiveIconStyle
+                }
+                // Active page
+                activePage={btn.activePage}
+              >
+                {btn.btnText}
+              </NavButton>
+            );
+          })}
         </ul>
       </nav>
 

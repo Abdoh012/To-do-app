@@ -5,6 +5,7 @@ import Button from "./Button";
 
 import { use, useRef } from "react";
 import AuthButtonsContext from "../Contexts/AuthButtonsContext";
+import ActionBtn from "../ActionBtn";
 
 // Variables
 const EMAIL = "abdohmahmoud28@gmail.com";
@@ -23,7 +24,7 @@ export default function Login() {
   // Functions
 
   // Handle sign in click
-  function handleClick() {
+  function handleSignInClick() {
     const emailValue = emailInput.current.value;
     let passwordValue = passwordInput.current.value;
 
@@ -82,24 +83,22 @@ export default function Login() {
                 {/* Email */}
                 <Input
                   type={"email"}
-                  htmlFor={"mail"}
+                  id={"Email"}
                   required={true}
                   placeholder={"email"}
                   ref={emailInput}
-                >
-                  Email
-                </Input>
+                  font="font-bold"
+                ></Input>
 
                 {/* Password */}
                 <Input
                   type={"password"}
-                  htmlFor={"pass"}
+                  id={"Password"}
                   placeholder={"password"}
                   required={true}
                   ref={passwordInput}
-                >
-                  Password
-                </Input>
+                  font="font-bold"
+                ></Input>
               </>
             ) : (
               // If sign up page show this
@@ -107,32 +106,29 @@ export default function Login() {
                 {/* Full name */}
                 <Input
                   type={"text"}
-                  htmlFor={"name"}
+                  id={"Full Name"}
                   placeholder={"name"}
                   required={true}
-                >
-                  Full Name
-                </Input>
+                  font="font-bold"
+                ></Input>
 
                 {/* Email */}
                 <Input
                   type={"email"}
-                  htmlFor={"mail"}
+                  id={"Email"}
                   required={true}
                   placeholder={"email"}
-                >
-                  Email
-                </Input>
+                  font="font-bold"
+                ></Input>
 
                 {/* Password */}
                 <Input
                   type={"password"}
-                  htmlFor={"pass"}
+                  id={"Password"}
                   placeholder={"password"}
                   required={true}
-                >
-                  Password
-                </Input>
+                  font="font-bold"
+                ></Input>
               </>
             )}
 
@@ -164,14 +160,15 @@ export default function Login() {
             )}
 
             {/* Sign in button */}
-            <button
+            <ActionBtn
+              handleClick={
+                activeAuth === "login" ? handleSignInClick : undefined
+              }
               type="confirm"
-              className="w-full bg-black text-center text-white py-2 rounded-lg cursor-pointer hover:bg-[#000000e0] duration-300"
-              onClick={activeAuth === "login" ? handleClick : undefined}
             >
               {/* If login page The button text is Sign In else Create Account */}
               {activeAuth === "login" ? "Sign In" : "Create Account"}
-            </button>
+            </ActionBtn>
           </form>
         </div>
       </section>
