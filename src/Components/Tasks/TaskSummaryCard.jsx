@@ -21,11 +21,11 @@ export default function TaskSummaryCard({
     <div>
       <div
         className={`${
-          completed ? "bg-emerald-300" : "bg-white"
-        }  flex justify-between mb-5  border border-neutral-200 rounded-2xl p-5 hover:shadow-md transition-all duration-300 animate__animated ${
+          completed && "opacity-60!"
+        } bg-white flex justify-between mb-5  border border-neutral-200 rounded-2xl p-5 hover:shadow-md transition-all duration-300 animate__animated ${
           !animation ? "animate__fadeIn" : "animate__fadeOut"
         }`}
-        style={{ "--animate-duration": "0.5s" }}
+        style={{ "--animate-duration": "0.5s", opacity: 1, }}
       >
         {/* Left side */}
         <div>

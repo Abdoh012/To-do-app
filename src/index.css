@@ -17,12 +17,12 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: rgb(245, 245, 245);
-  --secondary-foreground: rgb(23, 23, 23);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
-  --accent-foreground: rgb(23, 23, 23);
+  --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -130,4 +130,42 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@keyframes showUp {
+  from {
+    opacity: 0;
+    transform: translateY(150%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(150%);
+  }
+}
+
+body {
+  overflow-y: scroll;
+}
+
+.animationIn {
+  animation: showUp 0.5s linear;
+  bottom: 20px;
+  right: 25px;
+}
+
+.animationOut {
+  animation: hide 0.5s linear;
+  bottom: 20px;
+  right: 25px;
 }

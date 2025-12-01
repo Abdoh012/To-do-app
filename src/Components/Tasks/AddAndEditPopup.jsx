@@ -8,7 +8,6 @@ import { use } from "react";
 import TaskContext from "../Contexts/TasksContext";
 
 export default function AddAndEditPopup({
-  handleTask,
   handleClick,
   animation,
   taskText,
@@ -17,10 +16,19 @@ export default function AddAndEditPopup({
   taskDate,
   children,
 }) {
-  // Context
-  const { taskTextRef, taskDescriptionRef, taskCategoryRef, taskDateRef } =
-    use(TaskContext);
-  // End of context
+  // Contexts
+  const {
+    taskTextRef,
+    taskDescriptionRef,
+    taskCategoryRef,
+    taskDateRef,
+    handleAddNewTaskClick,
+    handleEditTaskClick,
+    handleCancelBtnClick,
+  } = use(TaskContext);
+  // End of contexts
+
+  // Component structure
   return (
     <div
       className={`animate__animated ${animation}  w-full h-full flex items-center justify-center fixed bg-[#dedede88] backdrop-blur-[1px]`}
@@ -32,7 +40,7 @@ export default function AddAndEditPopup({
           <p className="font-semibold text-lg">{children}</p>
           <button
             className="text-neutral-700 cursor-pointer"
-            onClick={handleClick}
+            onClick={handleCancelBtnClick}
           >
             <FontAwesomeIcon icon="fa-solid fa-x" size="sm" />
           </button>
@@ -90,7 +98,15 @@ export default function AddAndEditPopup({
           ></Input>
 
           {/* Add task button */}
-          <ActionBtn handleClick={handleTask}>{children}</ActionBtn>
+          <ActionBtn
+            handleClick={
+              children === "Add New Task"
+                ? handleAddNewTaskClick
+                : handleEditTaskClick
+            }
+          >
+            {children}
+          </ActionBtn>
         </form>
       </div>
     </div>

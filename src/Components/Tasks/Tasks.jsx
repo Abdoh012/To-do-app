@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 import AddButton from "../AddButton";
 import Header from "../Header";
 import PagesContainer from "../PagesContainer";
@@ -10,244 +10,60 @@ import PendingTasks from "./FilterTasks/PendingTasks";
 import TodayTasks from "./FilterTasks/TodayTasks";
 import { taskCards, taskFilterBtns } from "../../util/data";
 import AddAndEditPopup from "./AddAndEditPopup";
-import TaskContext from "../Contexts/TasksContext";
 import QUOTE from "@/util/quotes";
+import { Toaster } from "@/components/ui/sonner";
+import TaskContext from "../Contexts/TasksContext";
 
-// Structure
-export default function DashBoard() {
-  // Refs
-  const taskText = useRef();
-  const taskDescription = useRef();
-  const taskCategory = useRef();
-  const taskDate = useRef();
-  // End of refs
-
-  // States
-  const [activeBtn, setActiveBtn] = useState("All"); // Active filter tasks button state
-
-  const [tasks, setTasks] = useState([]); // Tasks state
-  const [showPopup, setShowPopup] = useState({
-    addPopup: false,
-    editPopup: false,
-  });
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [editingId, setEditingId] = useState();
-  // End of states
-
-  // Variables
-
-  // Number of all tasks
-  const numberOfTasks = tasks.length;
-
-  // Completed tasks
-
-  const completedTasks = tasks.filter((task) => task.completed);
-  const numberOfCompletedTasks = tasks.filter((task) => task.completed).length;
-
-  // Pending tasks
-  const pendingTasks = tasks.filter((task) => task.pending);
-  const numberOfPendingTasks = tasks.filter((task) => task.pending).length;
-
-  // Todays tasks
-  const date = new Date();
-  const todaysDate = `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()}`;
-
-  const todaysTasks = tasks.filter((task) => task.taskDate === todaysDate);
-
-  // Random number
-  const randomNumber = Date.now() * Math.random();
-
-  // End of variables
-
-  // Functions
-
-  // Show the a specific section of tasks (all, today, etc...)
-  function setActiveTasksSection(sectionBtn) {
-    setActiveBtn(sectionBtn);
-  }
-
-  // Show add task popup
-  function handleAddTaskClick() {
-    setShowAnimation(true);
-    setShowPopup((prev) => ({
-      ...prev,
-      addPopup: true,
-    }));
-  }
-
-  // Show edit task popup and set the editing id
-  function handleEditClick(id) {
-    // Set editing id to clicked task id
-    setEditingId(id);
-
-    // Show animation on opening popup
-    setShowAnimation(true);
-
-    // Show popup
-    setShowPopup((prev) => ({
-      ...prev,
-      editPopup: true,
-    }));
-  }
-
-  // Hide Popup
-  function handleCancelBtnClick() {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowPopup(() => ({
-        addPopup: false,
-        editPopup: false,
-      }));
-    }, 500);
-  }
-
-  // Edit task
-  function handleEditTaskClick(e) {
-    e.preventDefault();
-
-    // Hide animation on closing popup
-    setShowAnimation(false);
-
-    // Close popup
-    setTimeout(() => {
-      setShowPopup((prev) => ({
-        ...prev,
-        editPopup: false,
-      }));
-    }, 500);
-
-    // Edit task based on id
-    setTasks((prevTasks) => {
-      return prevTasks.map((task) => {
-        if (task.id === editingId) {
-          return {
-            ...task,
-            taskText: taskText.current.value,
-            taskDescription: taskDescription.current.value,
-            taskCategory: taskCategory.current.value,
-            taskDate: taskDate.current.value,
-          };
-        } else return task;
-      });
-    });
-  }
-
-  // Add tasks
-  function handleAddNewTaskClick(e) {
-    // No form actions onClicking the button
-    e.preventDefault();
-
-    // Hide the add task popup after 0.5 second
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 500);
-
-    // Set add tasks state
-    setTasks((prevTasks) => {
-      return [
-        ...prevTasks,
-        {
-          id: randomNumber,
-          completed: false,
-          pending: true,
-          taskText: taskText.current.value,
-          taskDescription: taskDescription.current.value,
-          taskCategory: taskCategory.current.value,
-          taskDate: taskDate.current.value,
-          animation: false,
-        },
-      ];
-    });
-  }
-
-  // Remove task
-  function handleRemoveTask(id) {
-    // Remove task with animation
-    setTasks((prevTasks) => {
-      return prevTasks.map((task) => {
-        // If the task will be removed set the animation to true before deleting it
-        if (task.id === id) {
-          return { ...task, animation: true };
-        }
-        return task;
-      });
-    });
-    setTimeout(() => {
-      setTasks((prevTasks) => {
-        return prevTasks.filter((task) => task.id !== id);
-      });
-    }, 500);
-  }
-
-  // Set task as completed or not completed
-  function taskState(id, state) {
-    setTasks((prevTasks) => {
-      return prevTasks.map((task) => {
-        // If the task is checked from the checkbox set the task as completed if it is not set it as not completed
-        if (task.id === id) {
-          task.pending = !state;
-          task.completed = state;
-        }
-        return task;
-      });
-    });
-  }
-  // End of functions
-
-  // Context values
-  const TaskContextVal = {
-    taskTextRef: taskText,
-    taskDescriptionRef: taskDescription,
-    taskCategoryRef: taskCategory,
-    taskDateRef: taskDate,
-    handleAddNewTaskClick: handleAddNewTaskClick,
-    taskState: taskState,
-    handleRemoveTask: handleRemoveTask,
-    handleAddTaskClick: handleAddTaskClick,
-    handleEditTask: handleEditTaskClick,
-    handleEdit: handleEditClick,
-  };
-  // End of context values
+export default function Tasks() {
+  const {
+    activeBtn,
+    showPopup,
+    showAnimation,
+    editingId,
+    tasks,
+    numberOfTasks,
+    numberOfCompletedTasks,
+    numberOfPendingTasks,
+  } = use(TaskContext);
 
   // Testing
+  console.log(tasks);
 
   // End of testing
 
   // Component structure
   return (
     <>
+      {/* Notification */}
+      <div>
+        <Toaster />
+      </div>
+
       {/* Add task popup */}
-      <TaskContext value={TaskContextVal}>
-        {showPopup.addPopup ? (
-          <AddAndEditPopup
-            handleTask={handleAddNewTaskClick}
-            handleClick={handleCancelBtnClick}
-            animation={showAnimation ? "animate__fadeIn" : "animate__fadeOut"}
-          >
-            Add New Task
-          </AddAndEditPopup>
-        ) : // Edit task popup
-        showPopup.editPopup ? (
-          <AddAndEditPopup
-            taskText={tasks.find((task) => task.id === editingId)?.taskText}
-            taskDescription={
-              tasks.find((task) => task.id === editingId)?.taskDescription
-            }
-            taskCategory={
-              tasks.find((task) => task.id === editingId)?.taskCategory
-            }
-            taskDate={tasks.find((task) => task.id === editingId)?.taskDate}
-            handleTask={handleEditTaskClick}
-            handleClick={handleCancelBtnClick}
-            animation={showAnimation ? "animate__fadeIn" : "animate__fadeOut"}
-          >
-            Edit Task
-          </AddAndEditPopup>
-        ) : undefined}
-      </TaskContext>
+
+      {showPopup.addPopup ? (
+        <AddAndEditPopup
+          taskDate={tasks.find((task) => task.id === editingId)?.taskDate}
+          animation={showAnimation ? "animate__fadeIn" : "animate__fadeOut"}
+        >
+          Add New Task
+        </AddAndEditPopup>
+      ) : // Edit task popup
+      showPopup.editPopup ? (
+        <AddAndEditPopup
+          taskText={tasks.find((task) => task.id === editingId)?.taskText}
+          taskDescription={
+            tasks.find((task) => task.id === editingId)?.taskDescription
+          }
+          taskCategory={
+            tasks.find((task) => task.id === editingId)?.taskCategory
+          }
+          taskDate={tasks.find((task) => task.id === editingId)?.taskDate}
+          animation={showAnimation ? "animate__fadeIn" : "animate__fadeOut"}
+        >
+          Edit Task
+        </AddAndEditPopup>
+      ) : undefined}
 
       <PagesContainer>
         {/* Header of the section task */}
@@ -280,17 +96,11 @@ export default function DashBoard() {
           <div className="flex gap-3">
             {taskFilterBtns.map((filterBtn) => {
               return (
-                <TaskFilterButton
-                  key={filterBtn}
-                  activeBtn={activeBtn}
-                  handleFilterBtnClick={setActiveTasksSection}
-                >
-                  {filterBtn}
-                </TaskFilterButton>
+                <TaskFilterButton key={filterBtn}>{filterBtn}</TaskFilterButton>
               );
             })}
           </div>
-          <AddButton handleClick={handleAddTaskClick}>+ Add Task</AddButton>
+          <AddButton>+ Add Task</AddButton>
         </div>
 
         {/* Quote */}
@@ -299,17 +109,16 @@ export default function DashBoard() {
         </div>
 
         {/* (AllTasks or CompletedTask or PendingTasks or TodayTasks) page */}
-        <TaskContext value={TaskContextVal}>
-          {activeBtn === "All" ? (
-            <AllTasks allTasks={tasks}></AllTasks>
-          ) : activeBtn === "Completed" ? (
-            <CompletedTasks completed={completedTasks}></CompletedTasks>
-          ) : activeBtn === "Pending" ? (
-            <PendingTasks pending={pendingTasks}></PendingTasks>
-          ) : activeBtn === "Today" ? (
-            <TodayTasks today={todaysTasks}></TodayTasks>
-          ) : null}
-        </TaskContext>
+
+        {activeBtn === "All" ? (
+          <AllTasks></AllTasks>
+        ) : activeBtn === "Completed" ? (
+          <CompletedTasks></CompletedTasks>
+        ) : activeBtn === "Pending" ? (
+          <PendingTasks></PendingTasks>
+        ) : activeBtn === "Today" ? (
+          <TodayTasks></TodayTasks>
+        ) : null}
       </PagesContainer>
     </>
   );

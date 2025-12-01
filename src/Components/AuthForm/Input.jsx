@@ -1,5 +1,3 @@
-import { useRef, useState } from "react";
-
 export default function Input({
   type,
   required,
@@ -10,10 +8,6 @@ export default function Input({
   margin,
   value,
 }) {
-  function setValue() {
-    setInputVal(ref.current.value);
-  }
-
   return (
     <div className="mb-5">
       <label htmlFor={id} className={`block mb-1 ${font} ${margin && margin}`}>

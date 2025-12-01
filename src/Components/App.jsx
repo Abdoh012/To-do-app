@@ -2,11 +2,12 @@ import { useState } from "react";
 import AuthForm from "./AuthForm/AuthForm";
 import AuthButtonsContext from "./Contexts/AuthButtonsContext";
 import SideBar from "./SideBar/SideBar";
-import Tasks from "./Tasks/Tasks";
+import Tasks from "./Tasks/Tasks.jsx";
 import Goals from "./Goals/Goals.jsx";
 import Habits from "./Habits/Habits.jsx";
-import Profile from "./Profile/Profile";
-import NavBtnCtx from "./Contexts/NavBtnCtx";
+import Profile from "./Profile/Profile.jsx";
+import NavBtnCtx from "./Contexts/NavBtnCtx.jsx";
+import { TaskWrapper } from "./Contexts/TasksContext";
 
 function App() {
   // States
@@ -75,15 +76,17 @@ function App() {
         </NavBtnCtx>
 
         {/* Display the correct page based on a state (which nav button was clicked) */}
-        {activePage.tasks ? (
-          <Tasks />
-        ) : activePage.goals ? (
-          <Goals></Goals>
-        ) : activePage.habits ? (
-          <Habits></Habits>
-        ) : activePage.profile ? (
-          <Profile></Profile>
-        ) : null}
+        <TaskWrapper>
+          {activePage.tasks ? (
+            <Tasks />
+          ) : activePage.goals ? (
+            <Goals></Goals>
+          ) : activePage.habits ? (
+            <Habits></Habits>
+          ) : activePage.profile ? (
+            <Profile></Profile>
+          ) : null}
+        </TaskWrapper>
       </section>
     </>
   );
