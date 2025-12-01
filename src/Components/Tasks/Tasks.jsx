@@ -27,8 +27,6 @@ export default function Tasks() {
   } = use(TaskContext);
 
   // Testing
-  console.log(tasks);
-
   // End of testing
 
   // Component structure

@@ -33,11 +33,15 @@ export function TaskWrapper({ children }) {
 
   // Todays tasks
   const date = new Date();
-  const todaysDate = `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()}`;
+  const todaysDate = `${date.getFullYear()}-${date.getMonth() + 1}-${
+    date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
+  }`;
+  console.log(todaysDate);
+  console.log(tasks[0].taskDate);
 
   const todaysTasks = tasks.filter((task) => task.taskDate === todaysDate);
+  console.log(todaysTasks);
+
   // End of variables
 
   // -------------------- REFS --------------------
