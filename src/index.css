@@ -154,10 +154,6 @@
   }
 }
 
-body {
-  overflow-y: scroll;
-}
-
 .animationIn {
   animation: showUp 0.5s linear;
   bottom: 20px;

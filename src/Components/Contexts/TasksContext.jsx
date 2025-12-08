@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { createContext, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 const TaskContext = createContext();
@@ -12,7 +12,6 @@ export function TaskWrapper({ children }) {
     addPopup: false,
     editPopup: false,
   });
-  const [showAnimation, setShowAnimation] = useState(false);
   const [editingId, setEditingId] = useState();
   // End of states
 
@@ -24,7 +23,7 @@ export function TaskWrapper({ children }) {
 
   // Completed tasks
 
-  const completedTasks = tasks.filter((task) => task.completed);
+  const completedTasks = tasks.filter((task) => task.completed === true);
   const numberOfCompletedTasks = tasks.filter((task) => task.completed).length;
 
   // Pending tasks
@@ -36,11 +35,8 @@ export function TaskWrapper({ children }) {
   const todaysDate = `${date.getFullYear()}-${date.getMonth() + 1}-${
     date.getDate() < 10 ? "0" + date.getDate() : date.getDate()
   }`;
-  console.log(todaysDate);
-  console.log(tasks[0].taskDate);
 
   const todaysTasks = tasks.filter((task) => task.taskDate === todaysDate);
-  console.log(todaysTasks);
 
   // End of variables
 
@@ -51,16 +47,34 @@ export function TaskWrapper({ children }) {
   const taskDate = useRef();
   // End of refs section
 
+  // -------------------- UseEffect --------------------
+
+  // Add overflow hidden class when the popup is opened
+  useEffect(() => {
+    if (showPopup.addPopup || showPopup.editPopup) {
+      document.body.classList.add("overflow-hidden");
+    } else document.body.classList.remove("overflow-hidden");
+
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [showPopup]);
+  // End of useEffect
+
   // Functions
 
-  // Show the a specific section of tasks (all, today, etc...)
+  // Show the specific section of tasks (all, today, etc...)
   function setActiveTasksSection(sectionBtn) {
     setActiveBtn(sectionBtn);
   }
 
   // Show add task popup
   function handleAddTaskClick() {
-    setShowAnimation(true);
+    // Focus on title after opening the popup
+    // Time out because react needs some time to see the elements in something after it is opened
+    setTimeout(() => {
+      taskText.current.focus();
+    }, 1);
+
+    // set add popup to true to open it
     setShowPopup((prev) => ({
       ...prev,
       addPopup: true,
@@ -69,22 +83,16 @@ export function TaskWrapper({ children }) {
 
   // Hide Popup
   function handleCancelBtnClick() {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowPopup(() => ({
-        addPopup: false,
-        editPopup: false,
-      }));
-    }, 500);
+    setShowPopup(() => ({
+      addPopup: false,
+      editPopup: false,
+    }));
   }
 
   // Show edit task popup and set the editing id
   function handleEditClick(id) {
     // Set editing id to clicked task id
     setEditingId(id);
-
-    // Show animation on opening popup
-    setShowAnimation(true);
 
     // Show popup
     setShowPopup((prev) => ({
@@ -99,8 +107,7 @@ export function TaskWrapper({ children }) {
       return prevTasks.map((task) => {
         // If the task is checked from the checkbox set the task as completed if it is not set it as not completed
         if (task.id === id) {
-          task.pending = !state;
-          task.completed = state;
+          return { ...task, pending: !state, completed: state };
         }
         return task;
       });
@@ -109,8 +116,25 @@ export function TaskWrapper({ children }) {
 
   // Add tasks
   function handleAddNewTaskClick(e) {
-    // No form actions onClicking the button
-    e.preventDefault();
+    e.preventDefault(); // stop default submit
+
+    // get the closest form element
+    const form = e.target.closest("form");
+
+    // run HTML5 validation FIRST
+    if (!form.checkValidity()) {
+      form.reportValidity();
+    }
+
+    // Check if title is empty
+    if (!taskText.current.value) {
+      toast.info("Please enter a task title first", {
+        duration: 5000,
+        position: "bottom-right",
+        closeButton: true,
+      });
+      return;
+    }
 
     // Add notification with text added successfully
     toast.success("Task added successfully! 🎉", {
@@ -126,10 +150,7 @@ export function TaskWrapper({ children }) {
     });
 
     // Hide the add task popup after 0.5 second
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 500);
+    setShowPopup(false);
 
     // Set add tasks state
     setTasks((prevTasks) => {
@@ -143,7 +164,6 @@ export function TaskWrapper({ children }) {
           taskDescription: taskDescription.current.value,
           taskCategory: taskCategory.current.value,
           taskDate: taskDate.current.value,
-          animation: false,
         },
       ];
     });
@@ -166,16 +186,13 @@ export function TaskWrapper({ children }) {
       closeButton: true,
     });
 
-    // Hide animation on closing popup
-    setShowAnimation(false);
-
+    
     // Close popup
-    setTimeout(() => {
-      setShowPopup((prev) => ({
-        ...prev,
-        editPopup: false,
-      }));
-    }, 500);
+
+    setShowPopup((prev) => ({
+      ...prev,
+      editPopup: false,
+    }));
 
     // Edit task based on id
     setTasks((prevTasks) => {
@@ -208,21 +225,10 @@ export function TaskWrapper({ children }) {
       closeButton: true,
     });
 
-    // Remove task with animation
+    // Remove the task
     setTasks((prevTasks) => {
-      return prevTasks.map((task) => {
-        // If the task will be removed set the animation to true before deleting it
-        if (task.id === id) {
-          return { ...task, animation: true };
-        }
-        return task;
-      });
+      return prevTasks.filter((task) => task.id !== id);
     });
-    setTimeout(() => {
-      setTasks((prevTasks) => {
-        return prevTasks.filter((task) => task.id !== id);
-      });
-    }, 500);
   }
 
   // End of functions
@@ -231,7 +237,6 @@ export function TaskWrapper({ children }) {
   const TaskContextVal = {
     activeBtn: activeBtn,
     showPopup: showPopup,
-    showAnimation: showAnimation,
     editingId: editingId,
     tasks: tasks,
     completedTasks: completedTasks,

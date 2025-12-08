@@ -1,9 +1,15 @@
 // Import font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "../../util/fontAwesome.js"
+import "../util/fontAwesome.js";
 
 // Component structure
-export default function TaskStatsCard({ children, icon, bgColor, count }) {
+export default function StatsCard({
+  children,
+  icon,
+  bgColor,
+  iconColor,
+  count,
+}) {
   // Variables
   const faIcon = icon;
   // end of variables
@@ -13,11 +19,10 @@ export default function TaskStatsCard({ children, icon, bgColor, count }) {
         <p className="text-neutral-600 mb-3">{children}</p>
         <p>{count}</p>
       </div>
-      <div className={`${bgColor && bgColor} p-2 rounded-full`}>
+      <div className={`${bgColor && bgColor} p-2 rounded-full ${iconColor}`}>
         <FontAwesomeIcon
           icon={`fa-solid ${faIcon}`}
           style={{
-            color: "#00bc7d",
             width: "30px",
             height: "30px",
             backgroundColor: bgColor && bgColor,

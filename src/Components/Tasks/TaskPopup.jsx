@@ -6,10 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "animate.css/animate.min.css";
 import { use } from "react";
 import TaskContext from "../Contexts/TasksContext";
+import { motion } from "motion/react";
 
-export default function AddAndEditPopup({
-  handleClick,
-  animation,
+export default function TaskPopup({
   taskText,
   taskDescription,
   taskCategory,
@@ -30,9 +29,13 @@ export default function AddAndEditPopup({
 
   // Component structure
   return (
-    <div
-      className={`animate__animated ${animation}  w-full h-full flex items-center justify-center fixed bg-[#dedede88] backdrop-blur-[1px]`}
-      style={{ "--animate-duration": "0.5s", zIndex: 100 }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: "linear" }}
+      className={`w-full h-full flex items-center justify-center fixed bg-[#dedede88] backdrop-blur-[1px]`}
+      style={{ zIndex: 100 }}
     >
       <div className="w-140 bg-white p-5 rounded-lg">
         {/* Header */}
@@ -109,6 +112,6 @@ export default function AddAndEditPopup({
           </ActionBtn>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }

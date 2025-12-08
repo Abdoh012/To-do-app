@@ -1,29 +1,29 @@
-import { use, useRef, useState } from "react";
+import { use } from "react";
 import AddButton from "../AddButton";
-import Header from "../Header";
 import PagesContainer from "../PagesContainer";
-import TaskStatsCard from "./TaskStatsCard";
 import TaskFilterButton from "./TaskFilterButton";
 import AllTasks from "./FilterTasks/AllTasks";
 import CompletedTasks from "./FilterTasks/CompletedTasks";
 import PendingTasks from "./FilterTasks/PendingTasks";
 import TodayTasks from "./FilterTasks/TodayTasks";
 import { taskCards, taskFilterBtns } from "../../util/data";
-import AddAndEditPopup from "./AddAndEditPopup";
+import TaskPopup from "./TaskPopup";
 import QUOTE from "@/util/quotes";
 import { Toaster } from "@/components/ui/sonner";
 import TaskContext from "../Contexts/TasksContext";
+import TopSection from "../TopSection";
+import { AnimatePresence } from "motion/react";
 
 export default function Tasks() {
   const {
     activeBtn,
     showPopup,
-    showAnimation,
     editingId,
     tasks,
     numberOfTasks,
     numberOfCompletedTasks,
     numberOfPendingTasks,
+    handleAddTaskClick,
   } = use(TaskContext);
 
   // Testing
@@ -39,55 +39,36 @@ export default function Tasks() {
 
       {/* Add task popup */}
 
-      {showPopup.addPopup ? (
-        <AddAndEditPopup
-          taskDate={tasks.find((task) => task.id === editingId)?.taskDate}
-          animation={showAnimation ? "animate__fadeIn" : "animate__fadeOut"}
-        >
-          Add New Task
-        </AddAndEditPopup>
-      ) : // Edit task popup
-      showPopup.editPopup ? (
-        <AddAndEditPopup
-          taskText={tasks.find((task) => task.id === editingId)?.taskText}
-          taskDescription={
-            tasks.find((task) => task.id === editingId)?.taskDescription
-          }
-          taskCategory={
-            tasks.find((task) => task.id === editingId)?.taskCategory
-          }
-          taskDate={tasks.find((task) => task.id === editingId)?.taskDate}
-          animation={showAnimation ? "animate__fadeIn" : "animate__fadeOut"}
-        >
-          Edit Task
-        </AddAndEditPopup>
-      ) : undefined}
+      <AnimatePresence>
+        {showPopup.addPopup ? (
+          <TaskPopup>Add New Task</TaskPopup>
+        ) : // Edit task popup
+        showPopup.editPopup ? (
+          <TaskPopup
+            taskText={tasks.find((task) => task.id === editingId)?.taskText}
+            taskDescription={
+              tasks.find((task) => task.id === editingId)?.taskDescription
+            }
+            taskCategory={
+              tasks.find((task) => task.id === editingId)?.taskCategory
+            }
+            taskDate={tasks.find((task) => task.id === editingId)?.taskDate}
+          >
+            Edit Task
+          </TaskPopup>
+        ) : undefined}
+      </AnimatePresence>
 
       <PagesContainer>
         {/* Header of the section task */}
-        <Header>Stay organized and productive</Header>
-
-        {/* Stats cards */}
-        <div className="flex justify-between gap-4">
-          {taskCards.map((taskCard) => {
-            return (
-              <TaskStatsCard
-                key={taskCard.id}
-                icon={taskCard.icon}
-                bgColor={taskCard.bgColor}
-                count={
-                  taskCard.title === "Total tasks"
-                    ? numberOfTasks
-                    : taskCard.title === "Completed"
-                    ? numberOfCompletedTasks
-                    : numberOfPendingTasks
-                }
-              >
-                {taskCard.title}
-              </TaskStatsCard>
-            );
-          })}
-        </div>
+        <TopSection
+          cards={taskCards}
+          all={numberOfTasks}
+          completed={numberOfCompletedTasks}
+          pending={numberOfPendingTasks}
+        >
+          Stay organized and productive
+        </TopSection>
 
         {/* Task filter and add buttons*/}
         <div className="flex justify-between my-5">
@@ -98,11 +79,11 @@ export default function Tasks() {
               );
             })}
           </div>
-          <AddButton>+ Add Task</AddButton>
+          <AddButton handleClick={handleAddTaskClick}>+ Add Task</AddButton>
         </div>
 
         {/* Quote */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-7 my-5">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-7 mt-5">
           <i>{QUOTE}</i>
         </div>
 

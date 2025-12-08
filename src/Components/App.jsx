@@ -8,6 +8,7 @@ import Habits from "./Habits/Habits.jsx";
 import Profile from "./Profile/Profile.jsx";
 import NavBtnCtx from "./Contexts/NavBtnCtx.jsx";
 import { TaskWrapper } from "./Contexts/TasksContext";
+import GoalsWrapper from "./Contexts/GoalsContext";
 
 function App() {
   // States
@@ -75,18 +76,19 @@ function App() {
           )}
         </NavBtnCtx>
 
-        {/* Display the correct page based on a state (which nav button was clicked) */}
-        <TaskWrapper>
-          {activePage.tasks ? (
-            <Tasks />
-          ) : activePage.goals ? (
-            <Goals></Goals>
-          ) : activePage.habits ? (
-            <Habits></Habits>
-          ) : activePage.profile ? (
-            <Profile></Profile>
-          ) : null}
-        </TaskWrapper>
+        {/* Display the correct page based on a state each one alone to avoid unmounting components (which nav button was clicked) */}
+
+        {/* Tasks */}
+        <TaskWrapper>{activePage.tasks && <Tasks></Tasks>}</TaskWrapper>
+
+        {/* Goals */}
+        <GoalsWrapper>{activePage.goals && <Goals></Goals>}</GoalsWrapper>
+
+        {/* Habits */}
+        {activePage.habits && <Habits></Habits>}
+
+        {/* Profile */}
+        {activePage.profile && <Profile></Profile>}
       </section>
     </>
   );

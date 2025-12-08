@@ -7,6 +7,9 @@ import { use, useRef } from "react";
 import AuthButtonsContext from "../Contexts/AuthButtonsContext";
 import ActionBtn from "../ActionBtn";
 
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+
 // Variables
 const EMAIL = "abdohmahmoud28@gmail.com";
 const PASSWORD = "123456789";
@@ -24,25 +27,79 @@ export default function Login() {
   // Functions
 
   // Handle sign in click
-  function handleSignInClick() {
+  function handleSignInClick(e) {
+    e.preventDefault(); // stop default submit
+
+    // get the closest form element
+    const form = e.target.closest("form");
+
+    // run HTML5 validation FIRST
+    if (!form.checkValidity()) {
+      form.reportValidity();
+    }
+
     const emailValue = emailInput.current.value;
-    let passwordValue = passwordInput.current.value;
+    const passwordValue = passwordInput.current.value;
 
-    // If email and password are right sign in and display dashboard
-    // Put that condition later => emailValue === EMAIL && passwordValue === PASSWORD
-    if (emailValue) {
+    // if email has no value
+    if (emailValue.length === 0) {
+      toast.info("Please enter your email", {
+        duration: 5000,
+        position: "bottom-right",
+        closeButton: true,
+      });
+      return;
+    }
+
+    // If password has no value
+    // else if (!passwordValue) {
+    //   toast.info("Please enter your password", {
+    //     duration: 5000,
+    //     position: "bottom-right",
+    //     closeButton: true,
+    //   });
+    //   return;
+    // }
+
+    // // Validate the email
+    // else if (emailValue !== EMAIL) {
+    //   toast.error("Email not found", {
+    //     duration: 5000,
+    //     position: "bottom-right",
+    //     closeButton: true,
+    //   });
+    //   return;
+    // }
+
+    // // Validate password
+    // else if (passwordValue !== PASSWORD) {
+    //   passwordInput.current.value = "";
+    //   passwordInput.current.placeholder = "Wrong password";
+    //   toast.error("Password is wrong", {
+    //     duration: 5000,
+    //     position: "bottom-right",
+    //     closeButton: true,
+    //   });
+    //   return;
+    // }
+
+    // Check email + password
+    //emailValue === EMAIL && passwordValue === PASSWORD
+    else if (emailValue === EMAIL) {
       activePage("tasks");
-
-      // If the password is not correct
-    } else if (passwordValue && passwordValue != PASSWORD) {
-      passwordInput.current.value = "";
-      passwordInput.current.placeholder = "Wrong password";
+      return;
     }
   }
+
   // End of functions
 
   return (
     <>
+      {/* Notification */}
+      <div>
+        <Toaster />
+      </div>
+
       <section className="h-screen overflow-hidden flex justify-center items-center flex-col">
         {/* Top section */}
         <div className="top text-center mb-8">
@@ -76,7 +133,7 @@ export default function Login() {
           </div>
 
           {/* Inputs */}
-          <form action="">
+          <form action="" noValidate>
             {/* If login page show this */}
             {activeAuth === "login" ? (
               <>
@@ -164,7 +221,6 @@ export default function Login() {
               handleClick={
                 activeAuth === "login" ? handleSignInClick : undefined
               }
-              type="confirm"
             >
               {/* If login page The button text is Sign In else Create Account */}
               {activeAuth === "login" ? "Sign In" : "Create Account"}

@@ -1,14 +1,13 @@
 import Icon from "../AuthForm/Icon";
-import NavButton from "./NavButton";
+import NavButton, { MotionNavButton } from "./NavButton";
 import { navBtns } from "@/util/data";
+import { motion } from "motion/react";
 
 // Import font awesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../util/fontAwesome.js";
 
 // Variables
-const activeBtnStyle = "bg-emerald-500 text-white";
-const nonActiveBtnStyle = "bg-auto text-neutral-700";
 const activeIconStyle = "text-white";
 const nonActiveIconStyle = "text-neutral-700";
 // End of variables
@@ -35,18 +34,14 @@ export default function SideBar({ activePage, onLogoutClick }) {
           {/* Tasks button */}
           {navBtns.map((btn) => {
             return (
-              <NavButton
+              <MotionNavButton
                 key={btn.id}
+                // Button text
+                text={btn.btnText}
                 // fa-icon of the button
-                fa={`${
-                  btn.activePage !== "profile" ? "fa-solid" : "fa-regular"
-                } ${btn.faIcon}`}
+                fa={btn.faIcon}
                 // Colors of the buttons
-                btnColors={
-                  activePage[btn.activePage]
-                    ? activeBtnStyle
-                    : nonActiveBtnStyle
-                }
+                textColor={activePage[btn.activePage] ? "#fff" : "#444"}
                 // Colors of the icons
                 iconColors={
                   activePage[btn.activePage]
@@ -56,8 +51,18 @@ export default function SideBar({ activePage, onLogoutClick }) {
                 // Active page
                 activePage={btn.activePage}
               >
-                {btn.btnText}
-              </NavButton>
+                {activePage[btn.activePage] && (
+                  <motion.div
+                    layoutId="moving-bg"
+                    className="absolute inset-0 rounded-lg bg-emerald-500"
+                    transition={{
+                      type: "spring",
+                      stiffness: 350,
+                      damping: 30,
+                    }}
+                  />
+                )}
+              </MotionNavButton>
             );
           })}
         </ul>

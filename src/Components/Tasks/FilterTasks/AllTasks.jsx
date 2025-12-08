@@ -1,18 +1,34 @@
 import { use } from "react";
-import TaskSummaryCard from "../TaskSummaryCard";
+import { MotionTaskCard } from "../TaskCard";
 import TaskContext from "@/Components/Contexts/TasksContext";
+import CardStyle from "@/Components/CardStyle";
+
+import { AnimatePresence } from "motion/react";
 
 export default function AllTasks() {
-  // Contexts
+  // -------------------- Contexts --------------------
   const { tasks } = use(TaskContext);
   // End of contexts
 
   // Component structure
   return (
-    <div>
+    <AnimatePresence>
+      {tasks.length === 0 && <CardStyle tasks={tasks} />}
       {tasks.map((task) => {
-        return <TaskSummaryCard key={task.id} {...task}></TaskSummaryCard>;
+        return (
+          <MotionTaskCard
+            key={task.id}
+            initial={{ opacity: 0 }}
+            animate={
+              task.completed
+                ? { opacity: 0.6, scale: 1 }
+                : { opacity: 1, scale: 1 }
+            }
+            exit={{ opacity: 0 }}
+            {...task}
+          ></MotionTaskCard>
+        );
       })}
-    </div>
+    </AnimatePresence>
   );
 }
