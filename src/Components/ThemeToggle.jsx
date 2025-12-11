@@ -18,6 +18,7 @@ export default function ThemeToggle({}) {
       <Switch
         id="dark-mode"
         onCheckedChange={toggleTheme}
+        checked={theme === "dark" ? true : false}
         onClick={() => handleSwitchTheme(theme)}
       />
     </div>

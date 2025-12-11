@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 
 export default function SettingOptions({ title, description, icon }) {
   // -------------------- Contexts --------------------
-  const { handleSwitchNotification } = use(ProfileCtx);
+  const { handleSwitchNotification, notifications } = use(ProfileCtx);
   // End of contexts
 
   // -------------------- Component structure --------------------
@@ -26,7 +26,10 @@ export default function SettingOptions({ title, description, icon }) {
           {title === "Theme" ? (
             <ThemeToggle></ThemeToggle>
           ) : (
-            <Switch onCheckedChange={handleSwitchNotification} />
+            <Switch
+              onCheckedChange={handleSwitchNotification}
+              checked={notifications === "Enabled" ? false : true}
+            />
           )}
         </div>
       </div>

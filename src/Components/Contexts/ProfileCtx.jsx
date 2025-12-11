@@ -7,6 +7,7 @@ export const ProfileCtx = createContext({
   userEmailRef: null,
   name: null,
   email: null,
+  notifications: null,
   shortcutName: null,
   profile: null,
   handleEditProfile: null,
@@ -35,7 +36,8 @@ export default function ProfileWrapper({ children }) {
 
   // -------------------- Variables --------------------
   const nameArray = userInfo.name.split(" ");
-  const shortcutName = nameArray[0][0] + nameArray[1][0];
+  const shortcutName =
+    nameArray.length > 1 ? nameArray[0][0] + nameArray[1][0] : nameArray[0][0];
 
   // End of variables
 
@@ -115,6 +117,7 @@ export default function ProfileWrapper({ children }) {
     userEmailRef: userEmail,
     name: userInfo.name,
     email: userInfo.email,
+    notifications: notifications,
     shortcutName: shortcutName,
     profile: profile,
     handleEditProfile: handleEditProfileClick,
