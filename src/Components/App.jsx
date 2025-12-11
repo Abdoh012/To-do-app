@@ -10,6 +10,9 @@ import NavBtnCtx from "./Contexts/NavBtnCtx.jsx";
 import { TaskWrapper } from "./Contexts/TasksContext";
 import GoalsWrapper from "./Contexts/GoalsContext";
 import HabitsWrapper from "./Contexts/HabitsCtx";
+import ThemeProvider from "./ThemeProvider";
+import ThemeToggle from "./ThemeToggle";
+import ProfileWrapper from "./Contexts/ProfileCtx";
 
 function App() {
   // States
@@ -64,33 +67,39 @@ function App() {
   // Component structure
   return (
     <>
-      {/* Authentication page */}
-      <AuthButtonsContext value={authCtxValue}>
-        {activePage.authPage && <AuthForm />}
-      </AuthButtonsContext>
+      <ThemeProvider>
+        {/* Authentication page */}
+        <AuthButtonsContext value={authCtxValue}>
+          {activePage.authPage && <AuthForm />}
+        </AuthButtonsContext>
 
-      <section className="flex">
-        {/* Side bar */}
-        <NavBtnCtx value={navBtnCtxValue}>
-          {!activePage.authPage && (
-            <SideBar activePage={activePage} onLogoutClick={displayPage} />
-          )}
-        </NavBtnCtx>
+        <section className="flex dark:bg-amber-400">
+          {/* Side bar */}
+          <NavBtnCtx value={navBtnCtxValue}>
+            {!activePage.authPage && (
+              <SideBar activePage={activePage} onLogoutClick={displayPage} />
+            )}
+          </NavBtnCtx>
 
-        {/* Display the correct page based on a state each one alone to avoid unmounting components (which nav button was clicked) */}
+          {/* Display the correct page based on a state each one alone to avoid unmounting components (which nav button was clicked) */}
 
-        {/* Tasks */}
-        <TaskWrapper>{activePage.tasks && <Tasks></Tasks>}</TaskWrapper>
+          {/* Tasks */}
+          <TaskWrapper>{activePage.tasks && <Tasks></Tasks>}</TaskWrapper>
 
-        {/* Goals */}
-        <GoalsWrapper>{activePage.goals && <Goals></Goals>}</GoalsWrapper>
+          {/* Goals */}
+          <GoalsWrapper>{activePage.goals && <Goals></Goals>}</GoalsWrapper>
 
-        {/* Habits */}
-        <HabitsWrapper>{activePage.habits && <Habits></Habits>}</HabitsWrapper>
+          {/* Habits */}
+          <HabitsWrapper>
+            {activePage.habits && <Habits></Habits>}
+          </HabitsWrapper>
 
-        {/* Profile */}
-        {activePage.profile && <Profile></Profile>}
-      </section>
+          {/* Profile */}
+          <ProfileWrapper>
+            {activePage.profile && <Profile></Profile>}
+          </ProfileWrapper>
+        </section>
+      </ThemeProvider>
     </>
   );
 }

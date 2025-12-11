@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddButton from "../AddButton";
 
 export default function Input({
@@ -11,15 +12,22 @@ export default function Input({
   value,
   addBtn,
   handleClick,
+  icon,
 }) {
   return (
-    <div className={`${placeholder !== "sub tasks" && "mb-5"}`}>
+    <div className={`${placeholder !== "sub tasks" && "mb-5"} w-full`}>
       <label htmlFor={id} className={`block mb-1 ${font} ${margin && margin}`}>
         {id}
       </label>
       <div
-        style={addBtn && { display: "flex", alignItems: "stretch", gap: "5px" }}
+      className="flex items-center"
+        style={addBtn && { display: "flex", alignItems: "stretch", gap: "5px", position: "relative" }}
       >
+        {icon && (
+          <span className="absolute ms-3 text-neutral-400">
+            <FontAwesomeIcon icon={`${icon}`}></FontAwesomeIcon>
+          </span>
+        )}
         {/* Input */}
         <input
           defaultValue={value}
@@ -27,8 +35,8 @@ export default function Input({
           required={required ? required : false}
           type={type}
           id={id}
-          placeholder={`Enter your ${placeholder}`}
-          className="input-focus px-4 py-3 w-full rounded-sm duration-300 bg-[#f3f3f5]"
+          placeholder={placeholder && `Enter your ${placeholder}`}
+          className={`${icon && "ps-10"} input-focus px-4 py-3 w-full rounded-sm duration-300 bg-[#f3f3f5]`}
         />
 
         {/* Add button */}
